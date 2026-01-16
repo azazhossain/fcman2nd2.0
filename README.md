@@ -444,7 +444,7 @@
         });
 
         function openAdmin() {
-            if(prompt("পাসওয়ার্ড:") === "admin123") {
+            if(prompt("পাসওয়ার্ড:") === "azaz9339") {
                 document.getElementById('adminPanel').style.display = 'flex';
                 if(currentCards[curIdx]) {
                     document.getElementById('editQ').value = currentCards[curIdx].q;
