@@ -1,21 +1,48 @@
-<html>
-        <head><title>Downloaded HTML</title></head>
-        <body>
-            <pre style="white-space: pre-wrap; word-wrap: break-word;"><!DOCTYPE html>
-<html lang="bn">
-<head>
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HSC Management 2nd Paper - 300 Cards Final</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>fcman2nd2.0 - HSC Management 2nd Paper</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&amp;display=swap" rel="stylesheet" />
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <style>
         :root { --primary: #10b981; --bg: #0f172a; --card-bg: #1e293b; --accent: #38bdf8; --text: #f8fafc; }
+        
+        /* ---------------------------------
+           PDF / PRINT STYLING (উন্নত বিন্যাস)
+        ------------------------------------ */
+        @media print {
+            @page { margin: 1.5cm; }
+            body { background: white !important; color: #000 !important; height: auto !important; overflow: visible !important; display: block !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            
+            .pdf-header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #10b981; padding-bottom: 10px; }
+            .pdf-header h1 { margin: 0; font-size: 22px; color: #10b981 !important; }
+            .pdf-header p { margin: 5px 0; font-size: 14px; color: #444 !important; }
+
+            .q-container { margin-bottom: 15px; page-break-inside: avoid; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+            .q-title { font-weight: 700; color: #000; display: block; margin-bottom: 3px; font-size: 15px; }
+            .a-content { color: #222; display: block; padding-left: 15px; font-size: 14px; line-height: 1.5; }
+            .footer-text { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 10px; color: #777; }
+        }
+
+        /* ---------------------------------
+           APP STYLING (আপনার মূল ডিজাইন)
+        ------------------------------------ */
         body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; touch-action: none; }
-        .header { margin-bottom: 10px; z-index: 10; }
+        .print-only { display: none; }
+        .header { margin-bottom: 10px; z-index: 10; display: flex; flex-direction: column; gap: 8px; }
         select { padding: 12px; border-radius: 12px; border: 2px solid var(--primary); background: var(--card-bg); color: white; width: 310px; font-family: 'Hind Siliguri'; outline: none; cursor: pointer; }
+        
+        /* পিডিএফ বাটনের স্টাইল */
+        .pdf-btn { background: #e11d48; color: white; border: none; padding: 10px; border-radius: 10px; font-family: 'Hind Siliguri'; font-weight: bold; cursor: pointer; transition: 0.3s; width: 310px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; }
+        .pdf-btn:hover { background: #be123c; transform: translateY(-1px); }
+
         .card-container { position: relative; width: 340px; height: 220px; perspective: 1000px; }
         .card { width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
         .card.is-flipped { transform: rotateY(180deg); }
@@ -24,16 +51,26 @@
         .back { border-top: 6px solid var(--accent); transform: rotateY(180deg); }
         .text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin: 0; }
         .counter { margin-top: 15px; font-weight: bold; color: var(--primary); font-size: 0.9rem; }
+        
         #adminTrigger { position: fixed; bottom: 0; right: 0; width: 50px; height: 50px; cursor: pointer; z-index: 1000; opacity: 0; }
         #adminPanel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
         .edit-box { background: #1e293b; padding: 20px; border-radius: 15px; width: 100%; max-width: 380px; border: 1px solid var(--primary); }
         textarea { width: 100%; padding: 10px; border-radius: 8px; background: #0f172a; color: white; margin-bottom: 10px; border: 1px solid #334155; font-family: 'Hind Siliguri'; resize: none; box-sizing: border-box; }
         .btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-family: 'Hind Siliguri'; transition: 0.3s; }
     </style>
-</head>
-<body>
+  </head>
+  <body>
 
-    <div class="header">
+    <div id="printArea" class="print-only">
+        <div class="pdf-header">
+            <h1>HSC ব্যবস্থাপনা ২য় পত্র - ফাইনাল সাজেশন</h1>
+            <p id="printTitle">অধ্যায়: লোড হচ্ছে...</p>
+        </div>
+        <div id="printList"></div>
+        <div class="footer-text">© fcman2nd2.0 - HSC Management Study Aid</div>
+    </div>
+
+    <div class="header no-print">
         <select id="chapMenu" onchange="loadChapter()">
             <option value="m1">১ম: ব্যবস্থাপনার ধারণা</option>
             <option value="m2">২য়: ব্যবস্থাপনার নীতি</option>
@@ -46,20 +83,23 @@
             <option value="m9">৯ম: সমন্বয় সাধন</option>
             <option value="m10">১০ম: নিয়ন্ত্রণ</option>
         </select>
+        <button class="pdf-btn" onclick="downloadAsPDF()">
+            <span>📄</span> এই অধ্যায়ের PDF ডাউনলোড
+        </button>
     </div>
 
-    <div class="card-container" id="swipeArea">
+    <div class="card-container no-print" id="swipeArea">
         <div class="card" id="mainCard" onclick="this.classList.toggle('is-flipped')">
             <div class="face front"><p class="text" id="qText">তথ্য লোড হচ্ছে...</p></div>
             <div class="face back"><p class="text" id="aText">লোডিং...</p></div>
         </div>
     </div>
 
-    <div class="counter" id="count">0 / 0</div>
+    <div class="counter no-print" id="count">0 / 0</div>
 
-    <div id="adminTrigger" onclick="openAdmin()"></div>
+    <div id="adminTrigger" class="no-print" onclick="openAdmin()"></div>
 
-    <div id="adminPanel">
+    <div id="adminPanel" class="no-print">
         <div class="edit-box">
             <textarea id="editQ" rows="3" placeholder="প্রশ্ন"></textarea>
             <textarea id="editA" rows="3" placeholder="উত্তর"></textarea>
@@ -85,7 +125,7 @@
         const db = firebase.database();
         let currentCards = [], curIdx = 0, touchStartX = 0;
 
-        // ৩০০টি পূর্ণাঙ্গ প্রশ্ন-উত্তর সমৃদ্ধ মাস্টার ডাটাবেস
+        // আপনার ৩০০টি পূর্ণাঙ্গ প্রশ্ন-উত্তর সমৃদ্ধ MASTER_DB
         const MASTER_DB = {
             m1: [
                 {q:"ব্যবস্থাপনা কী?", a:"লক্ষ্য অর্জনের জন্য অন্যদের দিয়ে কাজ করিয়ে নেওয়ার কৌশল।"},
@@ -117,7 +157,7 @@
                 {q:"কার্যকারিতা কী?", a:"নির্ধারিত সময়ে নির্ধারিত কাজ সম্পন্ন করা।"},
                 {q:"6M এ 'Money' এর কাজ কী?", a:"ব্যবসায়ের জন্য প্রয়োজনীয় অর্থ ও মূলধন।"},
                 {q:"ব্যবস্থাপনা কি কেবল ব্যবসায়িক?", a:"না, এটি সব ধরনের প্রতিষ্ঠানে প্রযোজ্য।"},
-                {q:"আদর্শ ব্যবস্থাপকের গুণ কী?", a:"ধৈর্য, দূরদর্শিতা ও দ্রুত সিদ্ধান্ত নেওয়ার ক্ষমতা।"}
+                {q:"আదర్శ ব্যবস্থাপকের গুণ কী?", a:"ধৈর্য, দূরদর্শিতা ও দ্রুত সিদ্ধান্ত নেওয়ার ক্ষমতা।"}
             ],
             m2: [
                 {q:"ব্যবস্থাপনার নীতি কী?", a:"ব্যবস্থাপকীয় কাজ সম্পাদনের সাধারণ নির্দেশিকা।"},
@@ -309,7 +349,7 @@
                 {q:"অংশগ্রহণমূলক প্রেষণা কী?", a:"সিদ্ধান্ত গ্রহণে কর্মীকে শামিল করা।"},
                 {q:"প্রেষণা কি কেবল অর্থে হয়?", a:"না, সম্মানেও বড় প্রেষণা হয়।"},
                 {q:"প্রেষণার লক্ষ্য কী?", a:"ব্যক্তিগত ও সাংগঠনিক লক্ষ্যের সমন্বয়।"},
-                {q:"মনস্তাত্ত্বিক প্রেষণা কোনটি?", a:"চ্যালেঞ্জিং কাজ প্রদান।"}
+                {q:"মনস্তাত্ত্বিক প্রেষণা কোনটি?", a:"চ্যালেন্জিং কাজ প্রদান।"}
             ],
             m8: [
                 {q:"যোগাযোগ কী?", a:"তথ্য, সংবাদ ও ভাব বিনিময় করার প্রক্রিয়া।"},
@@ -346,7 +386,7 @@
             m9: [
                 {q:"সমন্বয় সাধন কী?", a:"বিভিন্ন বিভাগ ও ব্যক্তির কাজের মধ্যে যোগসূত্র তৈরি।"},
                 {q:"সমন্বয়কে কী বলা হয়?", a:"ব্যবস্থাপনার সারবস্তু (Essence of Management)।"},
-                {q:"সমন্বয়ের মূল উদ্দেশ্য কী?", a:"কাজের ঐক্য ও লক্ষ্য অর্জন নিশ্চিত করা।"},
+                {q:"সমন্বয়ের মূল উদ্দেশ্য কী?", a:"কাজের ঐক্য ও লক্ষ্য অর্জন নিশ্চিত করা।"},
                 {q:"আনুভূমিক সমন্বয় কী?", a:"একই স্তরের বিভাগগুলোর মধ্যে সমন্বয়।"},
                 {q:"উলম্ব বা লম্বিক সমন্বয় কী?", a:"উচ্চ ও নিম্ন স্তরের মধ্যে সমন্বয়।"},
                 {q:"সমন্বয়ের মূল ভিত্তি কোনটি?", a:"কার্যকর যোগাযোগ।"},
@@ -360,16 +400,16 @@
                 {q:"সমন্বয় কার দায়িত্ব?", a:"সব স্তরের ব্যবস্থাপকদের।"},
                 {q:"দলগত প্রচেষ্টাকে সংহত করে কে?", a:"সমন্বয় সাধন।"},
                 {q:"সমন্বয় কখন শুরু হয়?", a:"পরিকল্পনা পর্যায় থেকেই।"},
-                {q:"আধুনিক ব্যবস্থাপনায় সমন্বয়ের গুরুত্ব কেন?", a:"কাজের বিশেষায়ন বাড়ার কারণে।"},
+                {q:"আধুনিক ব্যবস্থাপনায় সমন্বয়ের গুরুত্ব কেন?", a:"কাজের বিশেষায়ন বাড়ার কারণে।"},
                 {q:"স্বতঃস্ফূর্ত সমন্বয় কী?", a:"কর্মীরা নিজেরাই বুঝে যখন একে অন্যকে সাহায্য করে।"},
                 {q:"সমন্বয়ের অভাব বোঝার উপায় কী?", a:"বিভাগগুলোর মধ্যে দ্বন্দ্ব ও কাজের স্থবিরতা।"},
-                {q:"যোগাযোগ ও সমন্বয়ের সম্পর্ক কী?", a:"যোগাযোগ হলো মাধ্যম, সমন্বয় হলো ফল।"},
+                {q:"যোগাযোগ ও সমন্বয়ের সম্পর্ক কী?", a:"যোগাযোগ হলো মাধ্যম, সমন্বয় হলো ফল।"},
                 {q:"সমন্বয়ের মাধ্যমে কী কমানো যায়?", a:"উৎপাদন খরচ ও সময়।"},
                 {q:"বড় প্রতিষ্ঠানের জন্য সমন্বয় কেমন?", a:"অত্যন্ত জটিল ও অপরিহার্য।"},
                 {q:"সমন্বয় কি শুধু অভ্যন্তরীণ হয়?", a:"না, বাহ্যিক পক্ষের সাথেও হতে পারে।"},
                 {q:"সমন্বয় কেন ফলপ্রসূ হয় না?", a:"অস্পষ্ট লক্ষ্য ও দুর্বল নেতৃত্বের কারণে।"},
                 {q:"সমন্বয় সাধনে আইটি বা সফটওয়্যারের ভূমিকা কী?", a:"রিয়েল টাইম তথ্য বিনিময় সহজ করে।"},
-                {q:"শৃঙ্খলা ও সমন্বয়ের পার্থক্য কী?", a:"শৃঙ্খলা নিয়ম মানে, সমন্বয় কাজের মিল ঘটায়।"},
+                {q:"শৃঙ্খলা ও সমন্বয়ের পার্থক্য কী?", a:"শৃঙ্খলা নিয়ম মানে, সমন্বয় কাজের মিল ঘটায়।"},
                 {q:"সমন্বয়ের প্রাণ কোনটি?", a:"পারস্পরিক আস্থা ও বিশ্বাস।"},
                 {q:"কেন্দ্রীভূত সমন্বয় কী?", a:"এক কেন্দ্র থেকে সব নিয়ন্ত্রণ।"},
                 {q:"সমন্বয় কেন ব্যবস্থাপনার স্বতন্ত্র কাজ নয়?", a:"কারণ এটি সব কাজের মধ্যেই বিদ্যমান।"},
@@ -384,7 +424,7 @@
                 {q:"ব্রেক ইভেন পয়েন্ট (BEP) কী?", a:"এমন বিন্দু যেখানে লাভও হয় না, ক্ষতিও হয় না।"},
                 {q:"পার্ট (PERT) এর পূর্ণরূপ কী?", a:"Program Evaluation and Review Technique।"},
                 {q:"গ্যান্ট চার্ট কে প্রবর্তন করেন?", a:"হেনরি এল গ্যান্ট।"},
-                {q:"বাজেটীয় নিয়ন্ত্রণ কী?", a:"বাজেটকে আদর্শ মান ধরে নিয়ন্ত্রণ করা।"},
+                {q:"বাজেটীয় নিয়ন্ত্রণ কী?", a:"বাজেটকে আদর্শ মান ধরে নিয়ন্ত্রণ করা।"},
                 {q:"ব্যতিক্রম নীতি (Management by Exception) কী?", a:"শুধু বড় ভুলগুলোর দিকে গুরুত্ব দেওয়া।"},
                 {q:"নিয়ন্ত্রণ কেন ব্যবস্থাপনার শেষ কাজ?", a:"কারণ এটি কাজের ফল বিচার করে।"},
                 {q:"নিয়ন্ত্রণ কেন পশ্চাৎমুখী কাজ?", a:"কারণ এটি অতীতের কাজের ভুল সংশোধন করে।"},
@@ -401,7 +441,7 @@
                 {q:"নিয়ন্ত্রণ ও পরিকল্পনার সম্পর্ক কেমন?", a:"একই মুদ্রার এপিঠ-ওপিঠ।"},
                 {q:"গুণগত নিয়ন্ত্রণ (QC) কী?", a:"পণ্যের মান বজায় রাখার ব্যবস্থা।"},
                 {q:"অডিট বা নিরীক্ষা কী?", a:"হিসাবপত্রের নির্ভুলতা যাচাই।"},
-                {q:"বাজেটীয় নিয়ন্ত্রণের মূল সীমাবদ্ধতা?", a:"এটি সবসময় বাস্তবসম্মত হয় না।"},
+                {q:"বাজেটীয় নিয়ন্ত্রণের মূল সীমাবদ্ধতা?", a:"এটি সবসময় বাস্তবসম্মত হয় না।"},
                 {q:"নিয়ন্ত্রণ কেন ব্যয়বহুল?", a:"তদারকির জন্য দক্ষ লোক ও প্রযুক্তি লাগে।"},
                 {q:"ব্যবস্থাপনা অডিট কী?", a:"ব্যবস্থাপকদের দক্ষতার মূল্যায়ন।"},
                 {q:"সংগঠনের শৃঙ্খলা রক্ষায় নিয়ন্ত্রণের ভূমিকা কী?", a:"কর্মীদের দায়িত্বশীল করে তোলা।"},
@@ -417,8 +457,7 @@
                     currentCards.push({ id: child.key, ...child.val() });
                 });
                 
-                // যদি ডাটাবেস খালি থাকে, তবেই মাস্টার ডাটা পুশ করবে
-                if(currentCards.length === 0) {
+                if(currentCards.length === 0 && MASTER_DB[chap]) {
                     MASTER_DB[chap].forEach(item => db.ref('mgmt_final_300/' + chap).push(item));
                 }
                 curIdx = 0;
@@ -433,6 +472,28 @@
                 document.getElementById('count').innerText = `${curIdx + 1} / ${currentCards.length}`;
             }
             document.getElementById('mainCard').classList.remove('is-flipped');
+        }
+
+        // PDF ডাউনলোড লজিক
+        function downloadAsPDF() {
+            if(currentCards.length === 0) return alert("ডেটা লোড হওয়া পর্যন্ত অপেক্ষা করুন...");
+            
+            const chapName = document.getElementById('chapMenu').options[document.getElementById('chapMenu').selectedIndex].text;
+            document.getElementById('printTitle').innerText = "অধ্যায়: " + chapName;
+            
+            const printList = document.getElementById('printList');
+            printList.innerHTML = ''; 
+
+            currentCards.forEach((card, index) => {
+                const item = `
+                    <div class="q-container">
+                        <span class="q-title">${index + 1}. প্রশ্ন: ${card.q}</span>
+                        <span class="a-content">উত্তর: ${card.a}</span>
+                    </div>`;
+                printList.innerHTML += item;
+            });
+
+            window.print();
         }
 
         const swipeArea = document.getElementById('swipeArea');
@@ -476,8 +537,5 @@
         function closeAdmin() { document.getElementById('adminPanel').style.display = 'none'; }
         window.onload = loadChapter;
     </script>
-</body>
+  </body>
 </html>
-</pre>
-        </body>
-    </html>
