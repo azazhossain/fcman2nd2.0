@@ -67,7 +67,7 @@
             <p id="printTitle">অধ্যায়: লোড হচ্ছে...</p>
         </div>
         <div id="printList"></div>
-        <div class="footer-text">© fcman2nd2.0 - HSC Management Study Aid</div>
+        <div class="footer-text">© fcman2nd2.0 - HSC Management 2nd paper (created by Azaz)</div>
     </div>
 
     <div class="header no-print">
