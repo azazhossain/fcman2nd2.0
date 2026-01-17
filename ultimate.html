@@ -63,7 +63,7 @@
 
     <div id="printArea" class="print-only">
         <div class="pdf-header">
-            <h1>HSC ব্যবস্থাপনা ২য় পত্র - ফাইনাল সাজেশন</h1>
+            <h1>HSC ব্যবস্থাপনা ২য় পত্র</h1>
             <p id="printTitle">অধ্যায়: লোড হচ্ছে...</p>
         </div>
         <div id="printList"></div>
