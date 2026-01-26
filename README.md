@@ -84,7 +84,7 @@
             <option value="m10">১০ম: নিয়ন্ত্রণ</option>
         </select>
         <button class="pdf-btn" onclick="downloadAsPDF()">
-            <span>📄</span> এই অধ্যায়ের PDF ডাউনলোড
+            <span>📄</span>PDF ডাউনলোড
         </button>
     </div>
 
